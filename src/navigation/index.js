@@ -218,3 +218,104 @@ const CustomTabBar = ({ state, descriptors, navigation }) => {
 // Main Tab Navigator
 const TabNavigator = () => {
   const { userProfile } = useAuth();
+  
+  // Check if user is admin
+  const isAdmin = userProfile?.role === 'admin';
+  
+  return (
+    <Tab.Navigator
+      screenOptions={{
+        headerShown: false,
+        tabBarStyle: { display: 'none' }
+      }}
+      tabBar={props => <CustomTabBar {...props} />}
+    >
+      <Tab.Screen name="Home" component={HomeStackNavigator} />
+      <Tab.Screen name="Cart" component={CartStackNavigator} />
+      <Tab.Screen name="Profile" component={ProfileStackNavigator} />
+      {isAdmin && <Tab.Screen name="Admin" component={AdminStackNavigator} />}
+    </Tab.Navigator>
+  );
+};
+
+// Main App Navigator
+export const AppNavigator = () => {
+  const { user, loading } = useAuth();
+  const { theme } = useTheme();
+  
+  // Show loading screen while checking auth status
+  if (loading) {
+    return (
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: theme.background }}>
+        <ActivityIndicator size="large" color={theme.primary} />
+      </View>
+    );
+  }
+  
+  return (
+    <NavigationContainer>
+      <Stack.Navigator
+        screenOptions={{
+          headerShown: false,
+        }}
+      >
+        {/* User not logged in */}
+        {!user ? (
+          <>
+            <Stack.Screen name="Onboarding" component={OnboardingScreen} />
+            <Stack.Screen name="Auth" component={AuthNavigator} />
+          </>
+        ) : (
+          // User logged in
+          <Stack.Screen
+            name="Main"
+            component={TabNavigator}
+            options={{ headerShown: false }}
+          />
+        )}
+      </Stack.Navigator>
+    </NavigationContainer>
+  );
+};
+
+const styles = StyleSheet.create({
+  tabBarContainer: {
+    height: 80,
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0,
+    borderTopWidth: StyleSheet.hairlineWidth,
+  },
+  blurView: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+  },
+  tabBar: {
+    flexDirection: 'row',
+    height: '100%',
+  },
+  tabButton: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingVertical: 8,
+  },
+  tabIconContainer: {
+    position: 'relative',
+  },
+  tabLabel: {
+    marginTop: 4,
+    fontSize: 12,
+  },
+  badge: {
+    position: 'absolute',
+    top: -6,
+    right: -8,
+  },
+});
+
+export default AppNavigator;
