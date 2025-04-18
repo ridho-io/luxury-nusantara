@@ -143,4 +143,240 @@ const ProductDetailScreen = ({ route, navigation }) => {
           {currentProduct.profiles && (
             <Card style={styles.sellerCard}>
               <View style={styles.sellerHeader}>
-                <Text style={[styles.sellerTitle, { color: theme.text }]}>Seller
+                <Text style={[styles.sellerTitle, { color: theme.text }]}>Seller</Text>
+                <TouchableOpacity>
+                  <Text style={[styles.viewProfileText, { color: theme.primary }]}>
+                    View Profile
+                  </Text>
+                </TouchableOpacity>
+              </View>
+              <View style={styles.sellerInfo}>
+                <Image
+                  source={
+                    currentProduct.profiles.avatar_url
+                      ? { uri: currentProduct.profiles.avatar_url }
+                      : require('../../../assets/default-avatar.png')
+                  }
+                  style={styles.sellerAvatar}
+                />
+                <Text style={[styles.sellerName, { color: theme.text }]}>
+                  {currentProduct.profiles.username}
+                </Text>
+              </View>
+            </Card>
+          )}
+          
+          {/* Quantity Selector */}
+          <Card style={styles.quantityCard}>
+            <Text style={[styles.quantityTitle, { color: theme.text }]}>Quantity</Text>
+            <View style={styles.quantitySelector}>
+              <TouchableOpacity
+                onPress={decreaseQuantity}
+                style={[
+                  styles.quantityButton,
+                  { borderColor: theme.border, opacity: quantity === 1 ? 0.5 : 1 }
+                ]}
+                disabled={quantity === 1}
+              >
+                <Feather name="minus" size={20} color={theme.text} />
+              </TouchableOpacity>
+              
+              <View style={[styles.quantityDisplay, { borderColor: theme.border }]}>
+                <Text style={[styles.quantityText, { color: theme.text }]}>
+                  {quantity}
+                </Text>
+              </View>
+              
+              <TouchableOpacity
+                onPress={increaseQuantity}
+                style={[
+                  styles.quantityButton,
+                  {
+                    borderColor: theme.border,
+                    opacity: currentProduct.stock_count <= quantity ? 0.5 : 1
+                  }
+                ]}
+                disabled={currentProduct.stock_count <= quantity}
+              >
+                <Feather name="plus" size={20} color={theme.text} />
+              </TouchableOpacity>
+            </View>
+          </Card>
+        </View>
+      </ScrollView>
+      
+      {/* Add to Cart Button */}
+      <View style={[styles.bottomBar, { borderTopColor: theme.border }]}>
+        <View style={styles.priceContainer}>
+          <Text style={[styles.totalText, { color: theme.gray }]}>Total:</Text>
+          <Text style={[styles.totalPrice, { color: theme.text }]}>
+            ${(currentProduct.price * quantity).toFixed(2)}
+          </Text>
+        </View>
+        
+        <Button
+          title="Add to Cart"
+          onPress={handleAddToCart}
+          loading={cartLoading}
+          disabled={currentProduct.stock_count <= 0}
+          size="medium"
+          style={styles.addButton}
+          icon={<Feather name="shopping-cart" size={20} color="#FFFFFF" style={styles.buttonIcon} />}
+        />
+      </View>
+    </SafeAreaWrapper>
+  );
+};
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
+  infoContainer: {
+    paddingHorizontal: 16,
+    paddingTop: 16,
+    paddingBottom: 100, // Add extra space for bottom bar
+  },
+  nameContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 8,
+  },
+  productName: {
+    fontSize: 24,
+    fontWeight: '700',
+    flex: 1,
+    marginRight: 8,
+  },
+  productPrice: {
+    fontSize: 24,
+    fontWeight: '700',
+  },
+  ratingContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 16,
+  },
+  ratingStars: {
+    flexDirection: 'row',
+    marginRight: 8,
+  },
+  ratingText: {
+    fontSize: 14,
+  },
+  tagsContainer: {
+    flexDirection: 'row',
+    marginBottom: 16,
+  },
+  stockTag: {
+    marginLeft: 8,
+  },
+  descriptionCard: {
+    marginBottom: 16,
+  },
+  descriptionTitle: {
+    fontSize: 18,
+    fontWeight: '600',
+    marginBottom: 8,
+  },
+  descriptionText: {
+    fontSize: 16,
+    lineHeight: 24,
+  },
+  sellerCard: {
+    marginBottom: 16,
+  },
+  sellerHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 12,
+  },
+  sellerTitle: {
+    fontSize: 18,
+    fontWeight: '600',
+  },
+  viewProfileText: {
+    fontSize: 14,
+    fontWeight: '500',
+  },
+  sellerInfo: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  sellerAvatar: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    marginRight: 12,
+  },
+  sellerName: {
+    fontSize: 16,
+    fontWeight: '500',
+  },
+  quantityCard: {
+    marginBottom: 16,
+  },
+  quantityTitle: {
+    fontSize: 18,
+    fontWeight: '600',
+    marginBottom: 12,
+  },
+  quantitySelector: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  quantityButton: {
+    width: 40,
+    height: 40,
+    borderWidth: 1,
+    borderRadius: 8,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  quantityDisplay: {
+    width: 60,
+    height: 40,
+    borderWidth: 1,
+    borderRadius: 8,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginHorizontal: 12,
+  },
+  quantityText: {
+    fontSize: 16,
+    fontWeight: '600',
+  },
+  bottomBar: {
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0,
+    height: 80,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingHorizontal: 16,
+    borderTopWidth: 1,
+    backgroundColor: 'rgba(255, 255, 255, 0.9)',
+  },
+  priceContainer: {
+    flex: 1,
+  },
+  totalText: {
+    fontSize: 14,
+  },
+  totalPrice: {
+    fontSize: 20,
+    fontWeight: '700',
+  },
+  addButton: {
+    width: 200,
+  },
+  buttonIcon: {
+    marginRight: 8,
+  },
+});
+
+export default ProductDetailScreen;
