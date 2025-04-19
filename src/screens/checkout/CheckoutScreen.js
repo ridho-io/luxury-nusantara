@@ -208,4 +208,216 @@ const CheckoutScreen = ({ navigation }) => {
               <TextInput
                 style={[styles.input, { color: theme.text, borderColor: theme.border }]}
                 value={shippingAddress.zipCode}
-                onChangeText={(text) => handleChange('zipCode', text)}
+                // src/screens/checkout/CheckoutScreen.js (continued)
+                placeholder="Zip/Postal Code"
+                placeholderTextColor={theme.gray}
+              />
+            </View>
+            
+            <View style={[styles.inputGroup, { flex: 1, marginLeft: 8 }]}>
+              <Text style={[styles.inputLabel, { color: theme.text }]}>Country *</Text>
+              <TextInput
+                style={[styles.input, { color: theme.text, borderColor: theme.border }]}
+                value={shippingAddress.country}
+                onChangeText={(text) => handleChange('country', text)}
+                placeholder="Country"
+                placeholderTextColor={theme.gray}
+              />
+            </View>
+          </View>
+          
+          <View style={styles.inputGroup}>
+            <Text style={[styles.inputLabel, { color: theme.text }]}>Phone Number *</Text>
+            <TextInput
+              style={[styles.input, { color: theme.text, borderColor: theme.border }]}
+              value={shippingAddress.phoneNumber}
+              onChangeText={(text) => handleChange('phoneNumber', text)}
+              placeholder="Phone Number"
+              placeholderTextColor={theme.gray}
+              keyboardType="phone-pad"
+            />
+          </View>
+        </Card>
+        
+        {/* Payment Method */}
+        <Card style={styles.card}>
+          <Text style={[styles.cardTitle, { color: theme.text }]}>Payment Method</Text>
+          
+          <TouchableOpacity
+            style={[
+              styles.paymentOption,
+              paymentMethod === 'creditCard' && {
+                borderColor: theme.primary,
+                backgroundColor: `${theme.primary}10`, // 10% opacity
+              },
+              { borderColor: theme.border }
+            ]}
+            onPress={() => setPaymentMethod('creditCard')}
+          >
+            <View style={styles.paymentOptionContent}>
+              <Feather
+                name="credit-card"
+                size={24}
+                color={paymentMethod === 'creditCard' ? theme.primary : theme.text}
+              />
+              <Text
+                style={[
+                  styles.paymentOptionText,
+                  { color: paymentMethod === 'creditCard' ? theme.primary : theme.text },
+                ]}
+              >
+                Credit Card
+              </Text>
+            </View>
+            
+            {paymentMethod === 'creditCard' && (
+              <Feather name="check" size={20} color={theme.primary} />
+            )}
+          </TouchableOpacity>
+          
+          <TouchableOpacity
+            style={[
+              styles.paymentOption,
+              paymentMethod === 'paypal' && {
+                borderColor: theme.primary,
+                backgroundColor: `${theme.primary}10`, // 10% opacity
+              },
+              { borderColor: theme.border }
+            ]}
+            onPress={() => setPaymentMethod('paypal')}
+          >
+            <View style={styles.paymentOptionContent}>
+              <Feather
+                name="dollar-sign"
+                size={24}
+                color={paymentMethod === 'paypal' ? theme.primary : theme.text}
+              />
+              <Text
+                style={[
+                  styles.paymentOptionText,
+                  { color: paymentMethod === 'paypal' ? theme.primary : theme.text },
+                ]}
+              >
+                PayPal
+              </Text>
+            </View>
+            
+            {paymentMethod === 'paypal' && (
+              <Feather name="check" size={20} color={theme.primary} />
+            )}
+          </TouchableOpacity>
+        </Card>
+        
+        {/* Order Notes */}
+        <Card style={styles.card}>
+          <Text style={[styles.cardTitle, { color: theme.text }]}>Order Notes</Text>
+          <TextInput
+            style={[
+              styles.input,
+              styles.textarea,
+              { color: theme.text, borderColor: theme.border, height: 100 },
+            ]}
+            value={orderNotes}
+            onChangeText={setOrderNotes}
+            placeholder="Add any special instructions or notes about your order"
+            placeholderTextColor={theme.gray}
+            multiline
+            textAlignVertical="top"
+          />
+        </Card>
+        
+        {/* Place Order Button */}
+        <Button
+          title="Place Order"
+          onPress={handleSubmit}
+          size="large"
+          fullWidth
+          style={styles.placeOrderButton}
+        />
+      </ScrollView>
+    </SafeAreaWrapper>
+  );
+};
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    padding: 16,
+  },
+  card: {
+    marginBottom: 16,
+  },
+  cardTitle: {
+    fontSize: 18,
+    fontWeight: '600',
+    marginBottom: 16,
+  },
+  summaryRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginBottom: 8,
+  },
+  summaryLabel: {
+    fontSize: 16,
+  },
+  summaryValue: {
+    fontSize: 16,
+    fontWeight: '500',
+  },
+  divider: {
+    height: 1,
+    marginVertical: 8,
+  },
+  totalLabel: {
+    fontSize: 18,
+    fontWeight: '600',
+  },
+  totalValue: {
+    fontSize: 18,
+    fontWeight: '700',
+  },
+  inputGroup: {
+    marginBottom: 16,
+  },
+  inputLabel: {
+    fontSize: 14,
+    marginBottom: 8,
+  },
+  input: {
+    height: 48,
+    borderWidth: 1,
+    borderRadius: 8,
+    paddingHorizontal: 12,
+    fontSize: 16,
+  },
+  textarea: {
+    paddingVertical: 12,
+  },
+  rowInputs: {
+    flexDirection: 'row',
+    marginBottom: 16,
+  },
+  paymentOption: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    padding: 16,
+    borderWidth: 1,
+    borderRadius: 8,
+    marginBottom: 12,
+  },
+  paymentOptionContent: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  paymentOptionText: {
+    fontSize: 16,
+    fontWeight: '500',
+    marginLeft: 12,
+  },
+  placeOrderButton: {
+    marginBottom: 100, // Extra margin to avoid the bottom tab bar
+  },
+});
+
+export default CheckoutScreen;
